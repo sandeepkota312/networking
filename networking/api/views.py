@@ -39,7 +39,6 @@ class UserViewSet(ModelViewSet):
             return [],page_number
 
     def list(self, request, *args, **kwargs):
-        print(self.request.user,self.request.user.is_authenticated)
         queryset,page_number = self.filter_queryset(self.get_queryset())
         paginator = Paginator(queryset, 10)
         page_obj = paginator.get_page(page_number)
@@ -79,7 +78,6 @@ class FriendRequestViewSet(ModelViewSet):
         data={}
         data['to_user'] = int(self.request.data['to_user'])
         data['from_user'] = self.request.user.id
-        print(data)
         if data['to_user']!=data['from_user']:
             # checking for duplicates
             data_duplicate_check = self.queryset.filter(
