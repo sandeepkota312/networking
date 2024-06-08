@@ -74,6 +74,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'networking.wsgi.application'
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',  
+    'networking.custom_authentication.EmailModelBackend',
+]
+
+
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
