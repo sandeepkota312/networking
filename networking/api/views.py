@@ -77,30 +77,36 @@ class FriendRequestViewSet(ModelViewSet):
         if recent_requests >= 3:
             return Response({"detail": "You can only send 3 friend requests per minute."}, status=status.HTTP_429_TOO_MANY_REQUESTS)
         data={}
-        data['to_user'] = int(self.request.data['to_user'][0])
+        data['to_user'] = int(self.request.data['to_user'])
         data['from_user'] = self.request.user.id
         print(data)
-        # checking for duplicates
-        data_duplicate_check = self.queryset.filter(
-            from_user__id=data['from_user'],
-            to_user__id=data['to_user']
-            ).filter(
-                Q(status='sent') | Q(status='accepted')
-                )
-        if data_duplicate_check:
-            return Response({'detail':'Request for this user is already accepted/sent'},status=status.HTTP_208_ALREADY_REPORTED)
+        if data['to_user']!=data['from_user']:
+            # checking for duplicates
+            data_duplicate_check = self.queryset.filter(
+                from_user__id=data['from_user'],
+                to_user__id=data['to_user']
+                ).filter(
+                    Q(status='sent') | Q(status='accepted')
+                    )
+            if data_duplicate_check:
+                return Response({'detail':'Request for this user is already accepted/sent'},status=status.HTTP_208_ALREADY_REPORTED)
 
-        # adding it into database
-        request_obj=FriendRequest.objects.create(from_user=User.objects.get(id=data['from_user']),to_user=User.objects.get(id=data['to_user']))
-        request_serializer = self.serializer_class(request_obj)
-        return Response(
-            request_serializer.data,
-            status=status.HTTP_201_CREATED
+            # adding it into database
+            request_obj=FriendRequest.objects.create(from_user=User.objects.get(id=data['from_user']),to_user=User.objects.get(id=data['to_user']))
+            request_serializer = self.serializer_class(request_obj)
+            return Response(
+                request_serializer.data,
+                status=status.HTTP_201_CREATED
+                )
+        else:
+            return Response(
+                {"detail":"you can't send request to yourself"},
+                status=status.HTTP_400_BAD_REQUEST
             )
 
     @action(detail=True, methods=['post'])
     def accept(self, request,pk):
-        friend_request = self.queryset.get(from_user__id=pk,to_user__id=self.request.user.id)
+        friend_request = self.queryset.get(from_user__id=pk,to_user__id=self.request.user.id,status='sent')
         if friend_request.to_user != request.user:
             return Response({"detail": "You cannot accept this friend request."}, status=status.HTTP_403_FORBIDDEN)
         
@@ -113,15 +119,18 @@ class FriendRequestViewSet(ModelViewSet):
         return Response({"status": "Friend request accepted"}, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
-    def reject(self, request,pk):
-        friend_request = self.queryset.get(from_user__id=pk,to_user__id=self.request.user.id)
-        if friend_request.to_user != request.user:
-            return Response({"detail": "You cannot reject this friend request."}, status=status.HTTP_403_FORBIDDEN)
-        
-        friend_request.status = 'rejected'
-        friend_request.save()
-        
-        return Response({"status": "Friend request rejected"}, status=status.HTTP_200_OK)
+    def reject(self, request, pk=None):
+        try:
+            friend_request = self.queryset.get(from_user__id=pk, to_user__id=request.user.id,status='sent')
+            if friend_request.to_user != request.user:
+                return Response({"detail": "You cannot reject this friend request."}, status=status.HTTP_403_FORBIDDEN)
+            friend_request.status = 'rejected'
+            friend_request.save()
+            return Response({"status": "Friend request rejected"}, status=status.HTTP_200_OK)
+        except self.queryset.model.DoesNotExist:
+            return Response({"detail": "Friend request not found."}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class FriendsNetworkViewSet(ReadOnlyModelViewSet):
     serializer_class = UserSerializer
