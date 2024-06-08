@@ -7,7 +7,7 @@ from api.models import FriendsNetwork
 from networking.forms import CustomUserCreationForm
 
 
-@api_view(['POST'])
+@api_view(['POST','GET'])
 def signup_view(request):
     if request.method == 'POST':
         form = CustomUserCreationForm(request.data)
@@ -24,11 +24,20 @@ def signup_view(request):
                 return Response({'message': 'Signup successful but login failed'}, status=400)
         else:
             return Response({'message': 'Invalid form data', 'error': form.errors}, status=400)
+    elif request.method == 'GET':
+        return Response({
+            "format":{
+                "username":"Enter your name",
+                "email":"Enter your email id",
+                "password1":"Enter your password",
+                "password2":"Re-Enter your password"
+            }
+            },status=200)
     else:
-        return Response({'message': 'Only POST requests are allowed'}, status=405)
+        return Response({'message': 'Only POST/GET requests are allowed'}, status=405)
 
 
-@api_view(['POST'])
+@api_view(['POST','GET'])
 def login_view(request):
     if request.method == 'POST':
         data = request.data
@@ -44,6 +53,13 @@ def login_view(request):
                 return Response({'message': 'Invalid credentials'}, status=400)
         else:
             return Response({'message': 'Email/Username and password are required'}, status=400)
+    elif request.method == 'GET':
+        return Response({
+            "format":{
+                "email":"Enter your email id",
+                "password":"Enter your password"
+            }
+            },status=200)
     else:
         return Response({'message': 'Only POST requests are allowed'}, status=405)
 
