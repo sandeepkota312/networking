@@ -64,8 +64,14 @@ class FriendRequestViewSet(ModelViewSet):
     
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        user_list = [{"id":query.from_user.id,"name":query.from_user.username,"email":query.from_user.email} for query in queryset]
-        response = {"requests":user_list}
+        user_list = [{"name":query.from_user.username,"email":query.from_user.email} for query in queryset]
+        response = {
+            "requests":user_list,
+            "instructions":{
+                "accept":"To accept the friend request use 'http://127.0.0.1:7000/api/friend-requests/<username>/accept/'",
+                "reject":"To Reject the friend request use 'http://127.0.0.1:7000/api/friend-requests/<username>/reject/'"
+            }
+            }
         return Response(response,status=status.HTTP_200_OK)
 
 
@@ -91,9 +97,15 @@ class FriendRequestViewSet(ModelViewSet):
 
             # adding it into database
             request_obj=FriendRequest.objects.create(from_user=User.objects.get(id=data['from_user']),to_user=User.objects.get(id=data['to_user']))
-            request_serializer = self.serializer_class(request_obj)
+            # request_serializer = self.serializer_class(request_obj)
             return Response(
-                request_serializer.data,
+                {
+                    "success":f"Friend request sent to {request_obj.to_user.username} - {request_obj.to_user.email}",
+                    "details":{
+                        "username":request_obj.to_user.username,
+                        "email":request_obj.to_user.email,
+                        }
+                    },
                 status=status.HTTP_201_CREATED
                 )
         else:
@@ -104,7 +116,7 @@ class FriendRequestViewSet(ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def accept(self, request,pk):
-        friend_request = self.queryset.get(from_user__id=pk,to_user__id=self.request.user.id,status='sent')
+        friend_request = self.queryset.get(from_user__username=pk,to_user__id=self.request.user.id,status='sent')
         if friend_request.to_user != request.user:
             return Response({"detail": "You cannot accept this friend request."}, status=status.HTTP_403_FORBIDDEN)
         
@@ -119,7 +131,7 @@ class FriendRequestViewSet(ModelViewSet):
     @action(detail=True, methods=['post'])
     def reject(self, request, pk=None):
         try:
-            friend_request = self.queryset.get(from_user__id=pk, to_user__id=request.user.id,status='sent')
+            friend_request = self.queryset.get(from_user__username=pk, to_user__id=request.user.id,status='sent')
             if friend_request.to_user != request.user:
                 return Response({"detail": "You cannot reject this friend request."}, status=status.HTTP_403_FORBIDDEN)
             friend_request.status = 'rejected'
