@@ -2,8 +2,9 @@
 REST API's to connect with any user
 
 ## Pre-Setup
-1. create ```.env``` file in the root directory
-2. add the below content in ```.env``` file
+1. go to networking directory ```cd networking```
+2. create ```.env``` file in the root directory
+3. add the below content in ```.env``` file
    ```bash
    POSTGRES_USERNAME="Enter your username(Ex: postgres)"
    POSTGRES_DATABASE="Enter a database name(Ex: postgres)"
