@@ -2,7 +2,7 @@ services:
   database:
     image: postgres:latest
     container_name: networking-postgres-server
-    restart: unless-stopped
+    restart: always
     expose:
       - 5432
     env_file:

@@ -3,7 +3,7 @@ REST API's to connect with any user
 
 ## Pre-Setup
 1. go to networking directory ```cd networking```
-2. create ```.env``` file in the root directory
+2. create ```.env``` file
 3. add the below content in ```.env``` file
    ```bash
    POSTGRES_USERNAME="Enter your username(Ex: postgres)"
@@ -16,7 +16,7 @@ REST API's to connect with any user
 
 1. Run your application
     ```bash
-    docker-compose build --no-cache && docker-compose up -d
+    docker compose build --no-cache && docker compose up -d
     ```
 
 2. To setup your super user:
