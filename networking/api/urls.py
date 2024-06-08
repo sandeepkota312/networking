@@ -3,8 +3,11 @@ from rest_framework.routers import DefaultRouter
 from api import views
 
 router = DefaultRouter()
-# router.register(r"userprofile", views.UserProfileViewSet, basename="userprofile")
+router.register(r'users', views.UserViewSet)
+router.register(r'friend-requests', views.FriendRequestViewSet, basename='friendrequest')
+router.register(r'friends', views.FriendsNetworkViewSet, basename='friends')
+# router.register(r'pending-requests', views.PendingFriendRequestsViewSet, basename='pendingrequests')
 
 urlpatterns = [
-    path("", include(router.urls)),
+    path('', include(router.urls)),
 ]
