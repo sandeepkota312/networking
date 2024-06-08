@@ -1,6 +1,6 @@
 FROM python:3.11.9
 
-LABEL team="Octowit"
+LABEL team="networking"
 
 ENV PYTHONUNBUFFERED 1
 
