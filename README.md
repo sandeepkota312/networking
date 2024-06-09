@@ -34,7 +34,7 @@ REST API's to connect with any user
 
 You can now access the backend server in [http://127.0.0.1:7000/](http://127.0.0.1:7000/signup/). 
 
-It will initially ask you signup, you can diectly login using your admin account by going to [login](http://127.0.0.1:8000/login/) page OR follow the template provided to create a seperate account
+It will initially ask you signup, you can diectly login using your admin account by going to [login](http://127.0.0.1:7000/login/) page OR follow the template provided to create a seperate account
 
 
 ## List of all API's
@@ -42,14 +42,14 @@ It will initially ask you signup, you can diectly login using your admin account
 | API Description                                 | URL                                                                                      |
 |-------------------------------------------------|------------------------------------------------------------------------------------------|
 | Signup                                          | [http://127.0.0.1:7000/signup/](http://127.0.0.1:7000/signup/)                           |
-| Login                                           | [http://127.0.0.1:7000/login/](http://127.0.0.1:8000/login/)                             |
-| Logout                                          | [http://127.0.0.1:7000/logout/](http://127.0.0.1:8000/logout/)                           |
-| Search for users                                | [http://127.0.0.1:8000/api/users/?query=<name/emailid>](http://127.0.0.1:8000/api/users/?query=<name/emailid>) |
-| Check your friend requests sent by other users | [http://127.0.0.1:8000/api/friend-requests/](http://127.0.0.1:8000/api/friend-requests/) |
-| Create a friend request                        | [http://127.0.0.1:8000/api/friend-requests/](http://127.0.0.1:8000/api/friend-requests/) |
-| Accept a friend request                        | [http://127.0.0.1:8000/api/friend-requests/<name>/accept/](http://127.0.0.1:8000/api/friend-requests/<name>/accept/) |
-| Reject a friend request                        | [http://127.0.0.1:8000/api/friend-requests/<name>/reject/](http://127.0.0.1:8000/api/friend-requests/<name>/reject/) |
-| Check your friend list                         | [http://127.0.0.1:8000/api/friends/](http://127.0.0.1:8000/api/friends/)                 |
+| Login                                           | [http://127.0.0.1:7000/login/](http://127.0.0.1:7000/login/)                             |
+| Logout                                          | [http://127.0.0.1:7000/logout/](http://127.0.0.1:7000/logout/)                           |
+| Search for users                                | [http://127.0.0.1:7000/api/users/?query=<name/emailid>&page=<page number>](http://127.0.0.1:7000/api/users/?query=<name/emailid>) |
+| Check your friend requests sent by other users | [http://127.0.0.1:7000/api/friend-requests/](http://127.0.0.1:7000/api/friend-requests/) |
+| Create a friend request                        | [http://127.0.0.1:7000/api/friend-requests/](http://127.0.0.1:7000/api/friend-requests/) |
+| Accept a friend request                        | [http://127.0.0.1:7000/api/friend-requests/request-id/accept/](http://127.0.0.1:7000/api/friend-requests/<request-id>/accept/) |
+| Reject a friend request                        | [http://127.0.0.1:7000/api/friend-requests/request-id/reject/](http://127.0.0.1:7000/api/friend-requests/<request-id>/reject/) |
+| Check your friend list                         | [http://127.0.0.1:7000/api/friends/](http://127.0.0.1:7000/api/friends/)                 |
 
 
 
