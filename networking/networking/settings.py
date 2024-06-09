@@ -79,6 +79,7 @@ AUTHENTICATION_BACKENDS = [
     'networking.custom_authentication.EmailModelBackend',
 ]
 
+AUTH_USER_MODEL = 'api.User'
 
 
 # Database
