@@ -19,7 +19,7 @@ REST API's to connect with any user
     docker compose build --no-cache && docker compose up -d
     ```
 
-2. To setup your super user:
+2. To setup your super user(OPTIONAL):
    
    a. Enter into backend container
    ```bash
@@ -29,12 +29,14 @@ REST API's to connect with any user
    ```bash
    python manage.py createsuperuser
    ```
+   ### Note:
+   You can only perform actions after creating friends network instance with user as admin from django admin page.
 
 ## Verdict
 
-You can now access the backend server in [http://127.0.0.1:7000/](http://127.0.0.1:7000/signup/). 
+You can now access the backend server in [http://127.0.0.1:7000/](http://127.0.0.1:7000/signup/). DRF app has been added for better convience. you can try these API's directly in chrome or in POSTMAN using the collections added in the repo ```networking.postman_collection.json```
 
-It will initially ask you signup, you can diectly login using your admin account by going to [login](http://127.0.0.1:7000/login/) page OR follow the template provided to create a seperate account
+It will initially ask you signup, you can diectly login using your admin account by going to [login](http://127.0.0.1:7000/login/) page or follow the template provided to create a seperate account.
 
 
 ## List of all API's
