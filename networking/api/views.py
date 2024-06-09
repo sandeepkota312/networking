@@ -3,6 +3,7 @@ from django.utils import timezone
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import get_user_model
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -11,11 +12,11 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.authentication import SessionAuthentication
 
 
-from api.models import User, FriendsNetwork, FriendRequest
+from api.models import FriendsNetwork, FriendRequest
 from api.permission import IsOnlinePermission
 from api.serializers import FriendRequestSerializer,UserSerializer
 
-
+User = get_user_model()
 DEFAULT_AUTH_CLASSES = [SessionAuthentication]
 
 class UserViewSet(ModelViewSet):
@@ -64,12 +65,12 @@ class FriendRequestViewSet(ModelViewSet):
     
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        user_list = [{"name":query.from_user.username,"email":query.from_user.email} for query in queryset]
+        user_list = [{"request-id":query.id,"name":query.from_user.username,"email":query.from_user.email} for query in queryset]
         response = {
             "requests":user_list,
             "instructions":{
-                "accept":"To accept the friend request use 'http://127.0.0.1:7000/api/friend-requests/<username>/accept/'",
-                "reject":"To Reject the friend request use 'http://127.0.0.1:7000/api/friend-requests/<username>/reject/'"
+                "accept":"To accept the friend request use 'http://127.0.0.1:7000/api/friend-requests/<request-id>/accept/'",
+                "reject":"To Reject the friend request use 'http://127.0.0.1:7000/api/friend-requests/<request-id>/reject/'"
             }
             }
         return Response(response,status=status.HTTP_200_OK)
@@ -116,29 +117,44 @@ class FriendRequestViewSet(ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def accept(self, request,pk):
-        friend_request = self.queryset.get(from_user__username=pk,to_user__id=self.request.user.id,status='sent')
-        if friend_request.to_user != request.user:
-            return Response({"detail": "You cannot accept this friend request."}, status=status.HTTP_403_FORBIDDEN)
-        
-        friend_request.status = 'accepted'
-        friend_request.save()
-        
-        friend_request.from_user.friends_network.friends.add(friend_request.to_user)
-        friend_request.to_user.friends_network.friends.add(friend_request.from_user)
-        
-        return Response({"status": "Friend request accepted"}, status=status.HTTP_200_OK)
+        try:
+            friend_request = self.queryset.get(id=pk,status='sent')
+            if friend_request:
+                if friend_request.to_user != request.user:
+                    return Response({"detail": "You cannot accept this friend request."}, status=status.HTTP_403_FORBIDDEN)
+                
+                friend_request.status = 'accepted'
+                friend_request.save()
+                
+                friend_request.from_user.friends_network.friends.add(friend_request.to_user)
+                friend_request.to_user.friends_network.friends.add(friend_request.from_user)
+                
+                return Response({"status": "Friend request accepted"}, status=status.HTTP_200_OK)
+            else:
+                return Response(
+                    {"detail":"friend request doesn't exist"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+        except Exception as e:
+            return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     @action(detail=True, methods=['post'])
-    def reject(self, request, pk=None):
+    def reject(self, request, pk):
         try:
-            friend_request = self.queryset.get(from_user__username=pk, to_user__id=request.user.id,status='sent')
-            if friend_request.to_user != request.user:
-                return Response({"detail": "You cannot reject this friend request."}, status=status.HTTP_403_FORBIDDEN)
-            friend_request.status = 'rejected'
-            friend_request.save()
-            return Response({"status": "Friend request rejected"}, status=status.HTTP_200_OK)
-        except self.queryset.model.DoesNotExist:
-            return Response({"detail": "Friend request not found."}, status=status.HTTP_404_NOT_FOUND)
+            friend_request = self.queryset.get(id=pk,status='sent')
+            if friend_request:
+                if friend_request.to_user != request.user:
+                    return Response({"detail": "You cannot reject this friend request."}, status=status.HTTP_403_FORBIDDEN)
+                
+                friend_request.status = 'rejected'
+                friend_request.save()
+                
+                return Response({"status": "Friend request rejected"}, status=status.HTTP_200_OK)
+            else:
+                return Response(
+                    {"detail":"friend request doesn't exist"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
         except Exception as e:
             return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
