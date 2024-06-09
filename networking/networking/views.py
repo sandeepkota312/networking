@@ -1,5 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework import status
+
 
 from django.contrib.auth import authenticate, login, logout
 
@@ -19,11 +21,11 @@ def signup_view(request):
             if user is not None:
                 FriendsNetwork.objects.create(user=user)
                 login(request, user)
-                return Response({'message': 'Signup successful'}, status=200)
+                return Response({'message': 'Signup successful'}, status=status.HTTP_200_OK)
             else:
-                return Response({'message': 'Signup successful but login failed'}, status=400)
+                return Response({'message': 'Signup successful but login failed'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'message': 'Invalid form data', 'error': form.errors}, status=400)
+            return Response({'message': 'Invalid form data', 'error': form.errors}, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
         return Response({
             "format":{
@@ -34,7 +36,7 @@ def signup_view(request):
             }
             },status=200)
     else:
-        return Response({'message': 'Only POST/GET requests are allowed'}, status=405)
+        return Response({'message': 'Only POST/GET requests are allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 
 @api_view(['POST','GET'])
@@ -48,11 +50,11 @@ def login_view(request):
             user = authenticate(request, username=email, password=password)
             if user is not None:
                 login(request, user)
-                return Response({'message': 'Login successful'}, status=200)
+                return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
             else:
-                return Response({'message': 'Invalid credentials'}, status=400)
+                return Response({'message': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
         else:
-            return Response({'message': 'Email/Username and password are required'}, status=400)
+            return Response({'message': 'Email/Username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
     elif request.method == 'GET':
         return Response({
             "format":{
@@ -61,9 +63,12 @@ def login_view(request):
             }
             },status=200)
     else:
-        return Response({'message': 'Only POST requests are allowed'}, status=405)
+        return Response({'message': 'Only POST/GET requests are allowed'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
 
 @api_view(['POST'])
 def logout_view(request):
-    logout(request)
-    return Response({'message': 'Logged out successfully'}, status=200)
+    if request.user.is_authenticated:
+        logout(request)
+        return Response({'message': 'Logged out successfully'}, status=status.HTTP_200_OK)
+    else:
+        return Response({'detail':"You are not authenticated user"},status=status.HTTP_400_BAD_REQUEST)
