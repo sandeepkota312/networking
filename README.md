@@ -39,7 +39,7 @@ docker compose down
    python manage.py createsuperuser
    ```
    ### Note:
-   with user as admin, You can only perform actions after creating friends network instance from django admin page.
+   With user as admin, You can only perform actions after creating friends network instance from django admin page.
 
 ## Verdict
 
