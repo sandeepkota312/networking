@@ -2,9 +2,13 @@
 REST API's to connect with any user
 
 ## Pre-Setup
-1. go to networking directory ```cd networking```
-2. create ```.env``` file
-3. add the below content in ```.env``` file
+1. Take a clone of dev branch from the repository 
+```bash
+git clone --branch dev https://github.com/sandeepkota312/networking.git
+```
+3. go to networking directory ```cd networking```
+4. create ```.env``` file
+5. add the below content in ```.env``` file
    ```bash
    POSTGRES_USERNAME="Enter your username(Ex: postgres)"
    POSTGRES_DATABASE="Enter a database name(Ex: postgres)"
@@ -34,7 +38,9 @@ REST API's to connect with any user
 
 ## Verdict
 
-You can now access the backend server in [http://127.0.0.1:7000/](http://127.0.0.1:7000/signup/). DRF app has been added for better convience. you can try these API's directly in chrome or in POSTMAN using the collections added in the repo ```networking.postman_collection.json```
+You can now access the backend server in [http://127.0.0.1:7000/](http://127.0.0.1:7000/signup/). ```DRF app``` is also added for convience. you can try the below API's directly in website or in POSTMAN using the collection added in the repo ```networking.postman_collection.json```
+
+When using ```POSTMAN```, ensure you add the ```X-CSRFToken``` header for authentication. You can obtain the CSRF token after logging in by checking the cookies in Postman, as the CSRF value will be stored there. This step is necessary to stay authenticated and perform tasks securely.
 
 It will initially ask you signup, you can diectly login using your admin account by going to [login](http://127.0.0.1:7000/login/) page or follow the template provided to create a seperate account.
 
