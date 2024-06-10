@@ -20,9 +20,9 @@ REST API's to connect with any user
 
 1. To perform this you need to have Docker and Docker compose in your pc. 
 2. Clean up your Docker environment to ensuring that you can start fresh
-```bash
-docker compose down
-```
+   ```bash
+   docker compose down
+   ```
 2. Run your application
     ```bash
     docker compose build --no-cache && docker compose up -d
