@@ -3,9 +3,9 @@ REST API's to connect with any user
 
 ## Pre-Setup
 1. Take a clone of dev branch from the repository 
-```bash
-git clone --branch dev https://github.com/sandeepkota312/networking.git
-```
+   ```bash
+   git clone --branch dev https://github.com/sandeepkota312/networking.git
+   ```
 3. go to networking directory ```cd networking```
 4. create ```.env``` file
 5. add the below content in ```.env``` file
