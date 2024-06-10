@@ -38,6 +38,10 @@ docker compose down
    ```bash
    python manage.py createsuperuser
    ```
+   c. You can exit the container with the below command
+   ```bash
+   exit
+   ```
    ### Note:
    With user as admin, You can only perform actions after creating friends network instance from django admin page.
 
