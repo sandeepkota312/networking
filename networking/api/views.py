@@ -165,12 +165,3 @@ class FriendsNetworkViewSet(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         return self.request.user.friends_network.friends.all()
-
-# class PendingFriendRequestsViewSet(ReadOnlyModelViewSet):
-#     queryset = FriendRequest.objects.all()
-#     serializer_class = FriendRequestSerializer
-#     authentication_classes = DEFAULT_AUTH_CLASSES
-
-#     def get_queryset(self):
-#         return self.queryset.filter(to_user=self.request.user, status='sent')
-

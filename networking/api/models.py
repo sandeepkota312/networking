@@ -9,10 +9,14 @@ from django.contrib.auth import get_user_model
 class User(AbstractUser):
     email = models.EmailField(unique=True, db_index=True)
     username = models.CharField(max_length=150, unique=True, db_index=True)
+    def __str__(self):
+        return f"{self.username} - {self.email}"
 
 class FriendsNetwork(BaseModel):
     user = models.OneToOneField(get_user_model(),on_delete=models.CASCADE,related_name="friends_network",db_index=True)
     friends = models.ManyToManyField(get_user_model(),symmetrical=False,blank=True)
+    def __str__(self):
+        return f"{self.user.username} - {self.user.email} - network"
 
 class FriendRequest(BaseModel):
     STATUS_CHOICES = [
